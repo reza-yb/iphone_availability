@@ -58,7 +58,7 @@ iphone-availability-checker/
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/iphone-availability-checker.git
+git clone https://github.com/reza-yb/iphone_availability
 cd iphone-availability-checker
 ```
 
@@ -237,7 +237,7 @@ Contributions are welcome! If you'd like to contribute to the iPhone Availabilit
 2. **Clone Your Fork**:
 
    ```bash
-   git clone https://github.com/yourusername/iphone-availability-checker.git
+   git clone https://github.com/your-username/iphone_availability
    cd iphone-availability-checker
    ```
 
