@@ -82,7 +82,7 @@ def check_iphone_availability(driver):
     except TimeoutException:
         message = "⚠️ <b>iPhone is not available.</b>"
         send_telegram_message(message, TELEGRAM_DEBUG_CHAT_ID)
-        logging.warning("iPhone is not available.")
+        logging.info("iPhone is not available.")
     except WebDriverException as e:
         message = f"❌ <b>Error during script execution:</b> {e}"
         send_telegram_message(message, TELEGRAM_DEBUG_CHAT_ID)
