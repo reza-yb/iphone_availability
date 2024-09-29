@@ -91,7 +91,7 @@ def check_iphone_availability(driver):
         exc_traceback = traceback.format_exc()
         message = f"❌ <b>Unhandled Exception:</b>\n{exc_traceback}"
         send_telegram_message(message, TELEGRAM_DEBUG_CHAT_ID)
-        logging.error(f"Unhandled exception: {exc_traceback}")
+        logging.error(f"Unhandled exception: {e}", exc_info=True)
 
 if __name__ == "__main__":
     send_telegram_message("🔍 Starting the iPhone availability checker...", TELEGRAM_DEBUG_CHAT_ID)
@@ -111,6 +111,8 @@ if __name__ == "__main__":
         while True:
             check_iphone_availability(driver)
             time.sleep(60)
+    except Exception as e:
+        logging.error(f"Error during script execution: {e}", exc_info=True)
     finally:
         driver.quit()
         logging.info("Driver quit and script finished.")
