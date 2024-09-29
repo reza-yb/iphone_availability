@@ -1,0 +1,16 @@
+# docker-compose.yml
+
+version: '3.8'
+
+services:
+  iphone_checker:
+    build: .
+    environment:
+      - TELEGRAM_BOT_TOKEN
+      - TELEGRAM_AVAILABILITY_CHAT_ID
+      - TELEGRAM_DEBUG_CHAT_ID
+      - RESERVATION_URL
+      - MODEL_NAME
+      - COLOR_NAME
+      - CAPACITY_NAME
+    restart: unless-stopped
