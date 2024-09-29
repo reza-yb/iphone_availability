@@ -66,7 +66,7 @@ def check_iphone_availability():
         driver.execute_script("arguments[0].click();", capacity_button)
         print(f"Selected capacity: {CAPACITY_NAME}")
 
-        WebDriverWait(driver, 10).until(
+        WebDriverWait(driver, timeout).until(
             EC.presence_of_element_located((By.XPATH, "//p/button"))
         )
         message = (
