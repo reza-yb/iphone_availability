@@ -69,7 +69,10 @@ def check_iphone_availability():
         WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.XPATH, "//p/button"))
         )
-        message = "✅ <b>Desired iPhone is Available!</b>"
+        message = (
+            f"✅ <b>Desired iPhone is Available!</b>\n"
+            f"<a href=\"{RESERVATION_URL}\">Click here to reserve your iPhone</a>"
+        )
         send_telegram_message(message, TELEGRAM_AVAILABILITY_CHAT_ID)
 
     except TimeoutException:
