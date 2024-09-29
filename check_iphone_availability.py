@@ -46,7 +46,7 @@ def check_iphone_availability():
     driver = webdriver.Chrome(options=chrome_options)
     try:
         driver.get(RESERVATION_URL)
-        timeout = 10
+        timeout = 1
 
         model_button = WebDriverWait(driver, timeout).until(
             EC.presence_of_element_located((By.XPATH, f"//span[contains(text(),'{MODEL_NAME}')]"))
@@ -95,4 +95,4 @@ if __name__ == "__main__":
     send_telegram_message("🔍 Starting the iPhone availability checker...", TELEGRAM_DEBUG_CHAT_ID)
     while True:
         check_iphone_availability()
-        time.sleep(3)
+        time.sleep(60)
