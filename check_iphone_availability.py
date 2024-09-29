@@ -1,6 +1,7 @@
 import time
 import os
 import requests
+import logging
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -8,6 +9,12 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, WebDriverException
 from selenium.webdriver.chrome.options import Options
 import traceback
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[logging.StreamHandler()]
+)
 
 TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
 TELEGRAM_AVAILABILITY_CHAT_ID = os.getenv('TELEGRAM_AVAILABILITY_CHAT_ID')
@@ -19,7 +26,7 @@ COLOR_NAME = os.getenv('COLOR_NAME')
 CAPACITY_NAME = os.getenv('CAPACITY_NAME')
 
 def send_telegram_message(message, chat_id):
-    print(f"Sending message to chat_id {chat_id}: {message}")
+    logging.info(f"Sending message to chat_id {chat_id}: {message}")
     url = f'https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage'
     payload = {
         'chat_id': chat_id,
@@ -29,11 +36,11 @@ def send_telegram_message(message, chat_id):
     try:
         response = requests.post(url, data=payload)
         if response.status_code == 200:
-            print(f"Message sent successfully to chat_id {chat_id}.")
+            logging.info(f"Message sent successfully to chat_id {chat_id}.")
         else:
-            print(f"Failed to send message to chat_id {chat_id}. Status code: {response.status_code}")
+            logging.error(f"Failed to send message to chat_id {chat_id}. Status code: {response.status_code}")
     except Exception as e:
-        print(f"Error sending message to chat_id {chat_id}: {e}")
+        logging.error(f"Error sending message to chat_id {chat_id}: {e}")
 
 def check_iphone_availability(driver):
     try:
@@ -46,19 +53,19 @@ def check_iphone_availability(driver):
             EC.presence_of_element_located((By.XPATH, f"//span[contains(text(),'{MODEL_NAME}')]"))
         )
         driver.execute_script("arguments[0].click();", model_button)
-        print(f"Selected model: {MODEL_NAME}")
+        logging.debug(f"Selected model: {MODEL_NAME}")
 
         color_button = WebDriverWait(driver, timeout).until(
             EC.presence_of_element_located((By.XPATH, f"//span[contains(text(),'{COLOR_NAME}')]"))
         )
         driver.execute_script("arguments[0].click();", color_button)
-        print(f"Selected color: {COLOR_NAME}")
+        logging.debug(f"Selected color: {COLOR_NAME}")
 
         capacity_button = WebDriverWait(driver, timeout).until(
             EC.presence_of_element_located((By.XPATH, f"//span[contains(text(),'{CAPACITY_NAME}')]"))
         )
         driver.execute_script("arguments[0].click();", capacity_button)
-        print(f"Selected capacity: {CAPACITY_NAME}")
+        logging.debug(f"Selected capacity: {CAPACITY_NAME}")
 
         WebDriverWait(driver, timeout).until(
             EC.presence_of_element_located((By.XPATH, "//p/button"))
@@ -75,16 +82,20 @@ def check_iphone_availability(driver):
     except TimeoutException:
         message = "⚠️ <b>iPhone is not available.</b>"
         send_telegram_message(message, TELEGRAM_DEBUG_CHAT_ID)
+        logging.warning("iPhone is not available.")
     except WebDriverException as e:
         message = f"❌ <b>Error during script execution:</b> {e}"
         send_telegram_message(message, TELEGRAM_DEBUG_CHAT_ID)
+        logging.error(f"WebDriverException encountered: {e}")
     except Exception as e:
         exc_traceback = traceback.format_exc()
         message = f"❌ <b>Unhandled Exception:</b>\n{exc_traceback}"
         send_telegram_message(message, TELEGRAM_DEBUG_CHAT_ID)
+        logging.error(f"Unhandled exception: {exc_traceback}")
 
 if __name__ == "__main__":
     send_telegram_message("🔍 Starting the iPhone availability checker...", TELEGRAM_DEBUG_CHAT_ID)
+    logging.info("Starting the iPhone availability checker...")
 
     chrome_options = Options()
     chrome_options.binary_location = "/usr/bin/chromium"
@@ -102,3 +113,4 @@ if __name__ == "__main__":
             time.sleep(60)
     finally:
         driver.quit()
+        logging.info("Driver quit and script finished.")
