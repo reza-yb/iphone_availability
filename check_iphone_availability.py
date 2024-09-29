@@ -35,17 +35,11 @@ def send_telegram_message(message, chat_id):
     except Exception as e:
         print(f"Error sending message to chat_id {chat_id}: {e}")
 
-def check_iphone_availability():
-    chrome_options = Options()
-    chrome_options.binary_location = "/usr/bin/chromium"
-    chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--no-sandbox")
-    chrome_options.add_argument("--disable-dev-shm-usage")
-    chrome_options.add_argument("--disable-gpu")
-
-    driver = webdriver.Chrome(options=chrome_options)
+def check_iphone_availability(driver):
     try:
-        driver.get(RESERVATION_URL)
+        driver.get(f"{RESERVATION_URL}")
+        driver.execute_script("window.localStorage.clear();")
+        driver.execute_script("window.sessionStorage.clear();")
         timeout = 10
 
         model_button = WebDriverWait(driver, timeout).until(
@@ -88,11 +82,23 @@ def check_iphone_availability():
         exc_traceback = traceback.format_exc()
         message = f"❌ <b>Unhandled Exception:</b>\n{exc_traceback}"
         send_telegram_message(message, TELEGRAM_DEBUG_CHAT_ID)
-    finally:
-        driver.quit()
 
 if __name__ == "__main__":
     send_telegram_message("🔍 Starting the iPhone availability checker...", TELEGRAM_DEBUG_CHAT_ID)
-    while True:
-        check_iphone_availability()
-        time.sleep(60)
+
+    chrome_options = Options()
+    chrome_options.binary_location = "/usr/bin/chromium"
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--disable-cache")
+
+    driver = webdriver.Chrome(options=chrome_options)
+
+    try:
+        while True:
+            check_iphone_availability(driver)
+            time.sleep(60)
+    finally:
+        driver.quit()
