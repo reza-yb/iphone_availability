@@ -46,7 +46,7 @@ def check_iphone_availability():
     driver = webdriver.Chrome(options=chrome_options)
     try:
         driver.get(RESERVATION_URL)
-        timeout = 1
+        timeout = 10
 
         model_button = WebDriverWait(driver, timeout).until(
             EC.presence_of_element_located((By.XPATH, f"//span[contains(text(),'{MODEL_NAME}')]"))
