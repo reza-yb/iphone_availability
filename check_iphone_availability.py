@@ -71,6 +71,9 @@ def check_iphone_availability():
         )
         message = (
             f"✅ <b>Desired iPhone is Available!</b>\n"
+            f"<b>Model:</b> {MODEL_NAME}\n"
+            f"<b>Color:</b> {COLOR_NAME}\n"
+            f"<b>Capacity:</b> {CAPACITY_NAME}\n"
             f"<a href=\"{RESERVATION_URL}\">Click here to reserve your iPhone</a>"
         )
         send_telegram_message(message, TELEGRAM_AVAILABILITY_CHAT_ID)
