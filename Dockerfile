@@ -26,6 +26,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 ENV CHROME_BIN=/usr/bin/chromium
 ENV CHROME_DRIVER=/usr/bin/chromedriver
 ENV DISPLAY=:99
+ENV PYTHONUNBUFFERED=1
 RUN chromium --version
 RUN chromedriver --version
 
