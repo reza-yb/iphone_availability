@@ -87,6 +87,7 @@ def check_iphone_availability(driver):
         message = f"❌ <b>Error during script execution:</b> {e}"
         send_telegram_message(message, TELEGRAM_DEBUG_CHAT_ID)
         logging.error(f"WebDriverException encountered: {e}")
+        raise
     except Exception as e:
         exc_traceback = traceback.format_exc()
         message = f"❌ <b>Unhandled Exception:</b>\n{exc_traceback}"
