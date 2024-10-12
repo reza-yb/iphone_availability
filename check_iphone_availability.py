@@ -39,8 +39,10 @@ def send_telegram_message(message, chat_id):
             logging.info(f"Message sent successfully to chat_id {chat_id}.")
         else:
             logging.error(f"Failed to send message to chat_id {chat_id}. Status code: {response.status_code}")
+            raise Exception(response.text)
     except Exception as e:
         logging.error(f"Error sending message to chat_id {chat_id}: {e}")
+        raise
 
 def check_iphone_availability(driver):
     try:
@@ -93,6 +95,7 @@ def check_iphone_availability(driver):
         message = f"❌ <b>Unhandled Exception:</b>\n{exc_traceback}"
         send_telegram_message(message, TELEGRAM_DEBUG_CHAT_ID)
         logging.error(f"Unhandled exception: {e}", exc_info=True)
+        raise
 
 if __name__ == "__main__":
     send_telegram_message("🔍 Starting the iPhone availability checker...", TELEGRAM_DEBUG_CHAT_ID)
