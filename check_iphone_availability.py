@@ -25,6 +25,8 @@ MODEL_NAME = os.getenv('MODEL_NAME')
 COLOR_NAME = os.getenv('COLOR_NAME')
 CAPACITY_NAME = os.getenv('CAPACITY_NAME')
 
+last_debug_message = time.time()
+
 def send_telegram_message(message, chat_id):
     logging.info(f"Sending message to chat_id {chat_id}: {message}")
     url = f'https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage'
@@ -42,9 +44,9 @@ def send_telegram_message(message, chat_id):
             raise Exception(response.text)
     except Exception as e:
         logging.error(f"Error sending message to chat_id {chat_id}: {e}")
-        raise
 
 def check_iphone_availability(driver):
+    global last_debug_message
     try:
         driver.get(f"{RESERVATION_URL}")
         driver.execute_script("window.localStorage.clear();")
@@ -83,7 +85,9 @@ def check_iphone_availability(driver):
 
     except TimeoutException:
         message = "⚠️ <b>iPhone is not available.</b>"
-        send_telegram_message(message, TELEGRAM_DEBUG_CHAT_ID)
+        if time.time() - last_debug_message < 60*5:
+            send_telegram_message(message, TELEGRAM_DEBUG_CHAT_ID)
+            last_debug_message = time.time()
         logging.info("iPhone is not available.")
     except WebDriverException as e:
         message = f"❌ <b>Error during script execution:</b> {e}"
