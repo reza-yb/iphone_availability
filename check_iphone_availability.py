@@ -85,7 +85,7 @@ def check_iphone_availability(driver):
 
     except TimeoutException:
         message = "⚠️ <b>iPhone is not available.</b>"
-        if time.time() - last_debug_message < 60*5:
+        if time.time() - last_debug_message > 60*5:
             send_telegram_message(message, TELEGRAM_DEBUG_CHAT_ID)
             last_debug_message = time.time()
         logging.info("iPhone is not available.")
